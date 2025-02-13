@@ -1,0 +1,115 @@
+.processo-enfermagem-container {
+    background-color: #ffffff;
+  }
+
+  .instructions-block {
+    background-color: #D8ECD8; /* Light green background */
+    color: #2D3F28;            /* Darker green text */
+    border-radius: 0.5rem;     /* Slightly rounded corners */
+  }
+  
+  .instructions-title {
+    color: #2D3F28;            /* Darker green for the title */
+    font-weight: 600;
+  }
+  
+  .instructions-text {
+    color: #2D3F28;            /* Darker green for the paragraph */
+    line-height: 1.5;
+  }
+
+  .processo-title {
+    color: #2D3F28; /* Dark green */
+    font-weight: 700;
+  }
+  
+  .patient-actions {
+    background-color: #E2F3E2; /* Light green background */
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  /* Example styling for the form-control and buttons inside .patient-actions */
+  .patient-actions .form-control {
+    border-color: #4A6741;
+  }
+  
+  .patient-actions .btn-primary {
+    background-color: #4A6741;
+    border-color: #4A6741;
+  }
+  
+  .patient-actions .btn-primary:hover {
+    background-color: #2D3F28;
+    border-color: #2D3F28;
+  }
+  
+  .patient-actions .btn-outline-primary {
+    color: #4A6741;
+    border-color: #4A6741;
+  }
+  
+  .patient-actions .btn-outline-primary:hover {
+    background-color: #4A6741;
+    color: #fff;
+  }
+  
+  /* Additional custom styles for the Processo de Enfermagem page */
+  .pesquisa-diagnostico {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .extra-options {
+    margin-top: 0.5rem;
+  }
+  
+  .selected-diagnoses {
+    margin-top: 1.5rem;
+  }
+  
+  .selected-diagnoses ul {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .btn-link > svg {
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  
+  /* Additional styling for dropdowns and selected diagnosis items */
+  .extra-options select {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+  }
+  
+  .selected-diagnoses .list-group-item {
+    background-color: #e9f5e9;
+  }
+  
+  /* Styling for the Prioritization block in Planejamento */
+  .priorizacao-block ul {
+    cursor: grab;
+  }
+  
+  /* Styling for Implementation multi-select dropdowns */
+  .implementacao-content select.form-control {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+  }
+  
+  /* Styling for the Evolution text block */
+  .evolution-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+  

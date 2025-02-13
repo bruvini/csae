@@ -1,0 +1,55 @@
+body {
+  background: linear-gradient(-45deg, #d4f4d4, #a8e6a2, #6ac96a, #2ea82e);
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s ease-in-out infinite;
+  font-family: "Arial", sans-serif;
+}
+
+/* Animação do fundo */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+/* Lado esquerdo: Formulário */
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Lado direito: Informações */
+.info-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+
+/* Fundo translúcido para melhor legibilidade */
+.info-box {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 1200px;
+}
+
+.info-container .btn-dark {
+  font-weight: bold;
+  border-radius: 8px;
+}

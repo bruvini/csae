@@ -1,0 +1,101 @@
+/* 
+   1) Center content both horizontally & vertically
+   2) Make right block wider
+   3) Bold clickable links in footer
+*/
+
+/* Container: use flex to center content vertically */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* so footer stays below */
+    justify-content: center; /* vertical center */
+    background-color: #ffffff;
+    padding: 2rem 0;
+  }
+  
+  /* Card style */
+  .login-card {
+    background-color: rgb(236, 248, 236);
+    border: 1px solid #4A6741; /* Green border */
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(74, 103, 65, 0.1);
+    margin-bottom: 1rem;
+  }
+  
+  /* Title and subtitle styles */
+  .titulo {
+    color: #4A6741; /* Primary green tone */
+    font-weight: bold;
+  }
+  
+  .subtitulo {
+    color: #2D3F28; /* Darker green tone */
+    font-size: 1rem;
+  }
+  
+  /* Label styling */
+  .form-label {
+    color: #4A6741;
+  }
+  
+  /* Custom green button */
+  .btn-custom {
+    background-color: #4A6741; /* Primary green */
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  .btn-custom:hover {
+    background-color: #2D3F28; /* Darker green */
+  }
+  
+  /* Green link styling */
+  .link-green {
+    color: #4A6741;
+    text-decoration: none;
+    font-weight: bold; /* Bold links */
+  }
+  .link-green:hover {
+    color: #2D3F28;
+    text-decoration: underline;
+  }
+  
+  /* Checkmark styling for the list */
+  .checkmark {
+    color: #4A6741;
+  }
+  
+  /* Fade-in animation */
+  .fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Logo styling */
+  .logo-csae {
+    max-width: 120px;
+    height: auto;
+  }
+  
+  /* Minimalist footer */
+  .login-footer {
+    color: #4A6741;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+  .login-footer a.link-green {
+    font-weight: bold; /* ensure bold links in footer */
+  }
+  

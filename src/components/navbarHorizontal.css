@@ -1,0 +1,28 @@
+.navbar-horizontal {
+  background-color: #8FBC8F; /* Softer green tone */
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  justify-content: center;  /* Center the menu items horizontally */
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu li {
+  margin-right: 1rem;
+}
+
+.navbar-menu li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-menu li a:hover {
+  color: #4A6741;
+}

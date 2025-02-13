@@ -1,0 +1,69 @@
+/* Remove the background color on the container to avoid the gray band */
+.cadastro-container {
+    min-height: 100vh;
+    background-color: #ffffff; /* White background */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .cadastro-card {
+    background-color: #ffffff;
+    border: 1px solid #4A6741; /* Green border */
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(74, 103, 65, 0.1);
+    /* Only the form block with shadow, no gray band behind */
+  }
+  
+  .cadastro-section {
+    margin-bottom: 2rem;
+  }
+  
+  /* Title and subtitle styles */
+  .titulo {
+    color: #4A6741; /* Primary green tone */
+    font-weight: bold;
+  }
+  
+  .subtitulo {
+    color: #2D3F28; /* Darker green tone */
+    font-size: 1rem;
+  }
+  
+  /* Form label styling */
+  .form-label {
+    color: #4A6741;
+  }
+  
+  /* Fade-in animation */
+  .fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Logo styling if needed */
+  .logo-csae {
+    max-width: 120px;
+    height: auto;
+  }
+  
+  /* Custom green button styling */
+  .btn-custom {
+    background-color: #4A6741; /* Primary green */
+    color: #ffffff;
+    border: none;
+  }
+  .btn-custom:hover {
+    background-color: #2D3F28; /* Darker green on hover */
+  }
+  

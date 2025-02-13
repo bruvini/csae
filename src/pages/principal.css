@@ -1,0 +1,67 @@
+.principal-container {
+    background-color: #ffffff;
+  }
+  
+  /* Logo styling in header */
+  .logo-csae {
+    max-width: 80px;
+    height: auto;
+  }
+  
+  /* Pulse dot animation */
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4A6741;
+    border-radius: 50%;
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Hover effect on the logout button */
+  .btn-logout:hover {
+    background-color: #4A6741 !important;
+    color: #fff !important;
+    border-color: #4A6741 !important;
+  }
+  
+  /* Hover effect on the Tools (menu) cards */
+  .tool-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Footer distribution + link hover */
+  .footer-row > .col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .footer-link {
+    transition: color 0.2s ease, font-weight 0.2s ease;
+  }
+  
+  .footer-link:hover {
+    color: #4A6741 !important;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  
