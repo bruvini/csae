@@ -6,6 +6,7 @@ import Login from "./pages/login";
 import Principal from "./pages/principal";
 import ProcessoEnfermagem from "./pages/processoEnfermagem";
 import GestaoUsuarios from "./pages/gestaoUsuarios";
+import Protocolos from "./pages/protocolos";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 
@@ -40,6 +41,14 @@ const App = () => (
               <AdminRoute>
                 <GestaoUsuarios />
               </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/protocolos"
+          element={
+            <ProtectedRoute>
+              <Protocolos />
             </ProtectedRoute>
           }
         />
