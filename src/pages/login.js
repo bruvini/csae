@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoCSAE from "../img/logo_csae.png";
 import "./login.css";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import {
   collection,
   query,
@@ -10,7 +10,7 @@ import {
   getDocs,
   doc,
   updateDoc,
-  increment
+  increment,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { toast, ToastContainer } from "react-toastify";
@@ -66,10 +66,10 @@ function Login() {
         return;
       }
       if (userData.statusAcesso === "Liberado") {
-        // Incrementa o campo "numeroAcessos" no Firestore (se não existir, será criado e iniciado com 1)
+        // Incrementa o campo "numeroAcessos" no Firestore (cria ou incrementa)
         const userDocRef = doc(db, "dbUsuarios", userData.id);
         await updateDoc(userDocRef, {
-          numeroAcessos: increment(1)
+          numeroAcessos: increment(1),
         });
         // Armazena os dados do usuário no localStorage para uso no Header e demais páginas
         localStorage.setItem("user", JSON.stringify(userData));
@@ -81,6 +81,27 @@ function Login() {
       console.error("Erro no login:", error);
       toast.error("Erro ao autenticar. Verifique suas credenciais.");
       setIsLoading(false);
+    }
+  };
+
+  // Função para redefinir a senha usando um URL de ação personalizado
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast.error("Por favor, insira seu e-mail para redefinir a senha.");
+      return;
+    }
+    const auth = getAuth();
+    const actionCodeSettings = {
+      // URL personalizada para a página de gerenciamento de conta (altere para seu domínio)
+      url: "https://csaefloripa.firebaseapp.com", 
+      handleCodeInApp: true,
+    };
+    try {
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      toast.success("E-mail de redefinição de senha enviado com sucesso.");
+    } catch (error) {
+      console.error("Erro ao enviar e-mail de redefinição de senha:", error);
+      toast.error("Erro ao enviar e-mail de redefinição de senha.");
     }
   };
 
@@ -131,7 +152,7 @@ function Login() {
                 {isLoading ? "Acessando..." : "Acessar"}
               </button>
               <div className="mt-3 text-center">
-                <a href="#" className="link-green me-3">
+                <a href="#" className="link-green me-3" onClick={handlePasswordReset}>
                   Esqueci a Senha
                 </a>
                 <a
@@ -160,7 +181,9 @@ function Login() {
               Uma nova era para a enfermagem em Florianópolis
             </h1>
             <p className="mb-4 subtitulo">
-              Ouvimos você! Nosso portal foi completamente reformulado para atender melhor às suas necessidades. Uma plataforma mais intuitiva, moderna e eficiente para apoiar seu trabalho diário.
+              Ouvimos você! Nosso portal foi completamente reformulado para atender
+              melhor às suas necessidades. Uma plataforma mais intuitiva, moderna e
+              eficiente para apoiar seu trabalho diário.
             </p>
             <ul className="list-unstyled">
               <li className="mb-2">
