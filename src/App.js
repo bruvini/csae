@@ -7,6 +7,7 @@ import Principal from "./pages/principal";
 import ProcessoEnfermagem from "./pages/processoEnfermagem";
 import GestaoUsuarios from "./pages/gestaoUsuarios";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +37,9 @@ const App = () => (
           path="/gestao-usuarios"
           element={
             <ProtectedRoute>
-              <GestaoUsuarios />
+              <AdminRoute>
+                <GestaoUsuarios />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
