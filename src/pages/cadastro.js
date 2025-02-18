@@ -218,7 +218,7 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
       window.open(pdfUrl, "_blank");
 
       setShowModal(false);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Erro ao salvar os dados:", error);
       toast.error("Erro ao salvar os dados. Tente novamente.");
@@ -606,7 +606,7 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/")}
                 >
                   Voltar para a página de login
                 </button>

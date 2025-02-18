@@ -5,6 +5,8 @@ import Cadastro from "./pages/cadastro";
 import Login from "./pages/login";
 import Principal from "./pages/principal";
 import ProcessoEnfermagem from "./pages/processoEnfermagem";
+import GestaoUsuarios from "./pages/gestaoUsuarios";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -12,10 +14,32 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/" element={<Principal />} />
-        <Route path="/processo-de-enfermagem" element={<ProcessoEnfermagem />} />
+        <Route
+          path="/inicio"
+          element={
+            <ProtectedRoute>
+              <Principal />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/processo-de-enfermagem"
+          element={
+            <ProtectedRoute>
+              <ProcessoEnfermagem />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestao-usuarios"
+          element={
+            <ProtectedRoute>
+              <GestaoUsuarios />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>

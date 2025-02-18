@@ -1,9 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
-import logoCSAE from "../img/logo_csae.png"; // Adjust the path if needed
+import logoCSAE from "../img/logo_csae.png"; // Ajuste o caminho se necessário
 import "./header.css";
+import { getAuth, signOut } from "firebase/auth";
 
-const Header = ({ userName, handleLogout }) => {
+const Header = () => {
+  const auth = getAuth();
+  const [userName, setUserName] = useState("Usuário");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        if (userData && userData.nome) {
+          setUserName(userData.nome);
+        }
+      } catch (error) {
+        console.error("Erro ao parsear o usuário:", error);
+      }
+    }
+  }, []);
+
+  const onLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    }
+  };
+
   return (
     <header className="bg-white border-bottom">
       <div className="container py-3">
@@ -23,7 +51,7 @@ const Header = ({ userName, handleLogout }) => {
             </span>
             <button
               className="btn btn-outline-success d-flex align-items-center btn-logout"
-              onClick={handleLogout}
+              onClick={onLogout}
             >
               <LogOut size={16} className="me-1" />
               Sair

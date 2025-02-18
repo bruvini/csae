@@ -6,11 +6,9 @@ import "./principal.css";
 
 function Principal() {
   const navigate = useNavigate();
-  const userName = "Usuário"; // Placeholder for actual user name
-
-  const handleLogout = () => {
-    navigate("/login");
-  };
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const userName = user ? user.nome : "Usuário";
 
   // Tools array with added 'link' property (currently set to "#" as a placeholder)
   const tools = [
@@ -67,7 +65,9 @@ function Principal() {
   return (
     <div className="principal-container d-flex flex-column min-vh-100">
       {/* Header Component */}
-      <Header userName={userName} handleLogout={handleLogout} />
+      <Header userName={userName} handleLogout={() => navigate("/")} />
+
+      {/* Navbar pode estar presente em um componente separado, se necessário */}
 
       {/* Main Content */}
       <main className="flex-fill">
@@ -79,12 +79,41 @@ function Principal() {
               Agradecemos sua participação!
             </h2>
             <p className="text-muted mb-0">
-              Obrigado por utilizar o Portal CSAE Floripa 2.0. Ajude-nos a melhorar
-              compartilhando esta ferramenta com seus colegas enfermeiros. Sua opinião 
-              é muito importante - não deixe de participar da pesquisa de satisfação 
-              quando aparecer o aviso.
+              Obrigado por utilizar o Portal CSAE Floripa 2.0. Ajude-nos a
+              melhorar compartilhando esta ferramenta com seus colegas
+              enfermeiros. Sua opinião é muito importante - não deixe de
+              participar da pesquisa de satisfação quando aparecer o aviso.
             </p>
           </div>
+
+          {/* Bloco: Ferramentas Exclusivas para Administradores */}
+          {user &&
+            user.statusAcesso === "Liberado" &&
+            user.tipoAcesso === "Administrador" && (
+              <div className="admin-tools card mb-4">
+                <div className="card-header">
+                  <h5 className="text-success fw-bold">
+                    Ferramentas Exclusivas para Administradores
+                  </h5>
+                </div>
+                <div className="card-body">
+                  <div className="d-flex justify-content-around">
+                    <button
+                      className="btn btn-outline-success"
+                      onClick={() => navigate("/gestao-usuarios")}
+                    >
+                      Gestão de Usuários
+                    </button>
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={() => navigate("/relatorios-uso")}
+                    >
+                      Relatórios de Uso
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
           {/* Tools Grid */}
           <div className="row g-4">
@@ -118,7 +147,7 @@ function Principal() {
             <div className="col">
               <h4 className="fw-bold text-success">Sobre</h4>
               <p className="text-muted small mb-0">
-                © 2024 Comissão Permanente de Sistematização da Assistência de 
+                © 2024 Comissão Permanente de Sistematização da Assistência de
                 Enfermagem (CSAE). Todos os direitos reservados.
               </p>
             </div>

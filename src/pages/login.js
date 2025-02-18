@@ -1,21 +1,87 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logoCSAE from "../img/logo_csae.png"; // Adjust path if needed
+import logoCSAE from "../img/logo_csae.png";
 import "./login.css";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+  increment
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !senha) {
+      toast.error("Preencha os campos de e-mail e senha");
+      return;
+    }
     setIsLoading(true);
+    const auth = getAuth();
+    try {
+      // Tenta autenticar com Firebase Auth
+      await signInWithEmailAndPassword(auth, email, senha);
+      
+      // Após a autenticação, busque os detalhes do usuário na coleção "dbUsuarios"
+      const q = query(collection(db, "dbUsuarios"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        toast.error("Usuário não encontrado no banco de dados");
+        setIsLoading(false);
+        return;
+      }
+      let userData = null;
+      querySnapshot.forEach((docSnap) => {
+        userData = { id: docSnap.id, ...docSnap.data() };
+      });
+      
+      // Certifica que o usuário possui o campo "nome"
+      if (!userData.nome) {
+        toast.error("Dados do usuário incompletos. Contate o administrador.");
+        setIsLoading(false);
+        return;
+      }
 
-    // Simula um atraso no login
-    setTimeout(() => {
+      // Verifique o statusAcesso do usuário
+      if (userData.statusAcesso === "Recusado" || userData.statusAcesso === "Revogado") {
+        toast.error("Problema no acesso. Entre em contato com: gerenf.sms.pmf@gmail.com");
+        setIsLoading(false);
+        return;
+      }
+      if (userData.statusAcesso === "Aguardando") {
+        toast.error("Seu acesso ainda não foi liberado. Tente mais tarde.");
+        setIsLoading(false);
+        return;
+      }
+      if (userData.statusAcesso === "Liberado") {
+        // Incrementa o campo "numeroAcessos" no Firestore (se não existir, será criado e iniciado com 1)
+        const userDocRef = doc(db, "dbUsuarios", userData.id);
+        await updateDoc(userDocRef, {
+          numeroAcessos: increment(1)
+        });
+        // Armazena os dados do usuário no localStorage para uso no Header e demais páginas
+        localStorage.setItem("user", JSON.stringify(userData));
+        toast.success(`Bem-vindo(a), ${userData.nome}`);
+        setIsLoading(false);
+        navigate("/inicio");
+      }
+    } catch (error) {
+      console.error("Erro no login:", error);
+      toast.error("Erro ao autenticar. Verifique suas credenciais.");
       setIsLoading(false);
-      alert("Autenticação pendente: Sistema em desenvolvimento. Em breve você poderá acessar.");
-    }, 1500);
+    }
   };
 
   return (
@@ -30,14 +96,16 @@ function Login() {
             </p>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="username" className="form-label">
-                  Nome de Usuário
+                <label htmlFor="email" className="form-label">
+                  E-mail
                 </label>
                 <input
-                  type="text"
+                  type="email"
                   className="form-control"
-                  id="username"
-                  placeholder="Digite seu usuário"
+                  id="email"
+                  placeholder="Digite seu e-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -50,6 +118,8 @@ function Login() {
                   className="form-control"
                   id="password"
                   placeholder="Digite sua senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
                   required
                 />
               </div>
@@ -90,9 +160,7 @@ function Login() {
               Uma nova era para a enfermagem em Florianópolis
             </h1>
             <p className="mb-4 subtitulo">
-              Ouvimos você! Nosso portal foi completamente reformulado para atender melhor às suas
-              necessidades. Uma plataforma mais intuitiva, moderna e eficiente para apoiar seu
-              trabalho diário.
+              Ouvimos você! Nosso portal foi completamente reformulado para atender melhor às suas necessidades. Uma plataforma mais intuitiva, moderna e eficiente para apoiar seu trabalho diário.
             </p>
             <ul className="list-unstyled">
               <li className="mb-2">
@@ -133,6 +201,7 @@ function Login() {
           @enfermagemfloripa
         </a>
       </footer>
+      <ToastContainer />
     </div>
   );
 }
