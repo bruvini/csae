@@ -34,7 +34,7 @@ function Principal() {
       title: "Protocolos de Enfermagem",
       description: "Acesse os protocolos vigentes",
       icon: FileText,
-      link: "#",
+      link: "/protocolos",
     },
     {
       title: "Notícias",
@@ -52,7 +52,7 @@ function Principal() {
       title: "Sobre a CSAE",
       description: "Conheça nossa comissão",
       icon: Info,
-      link: "#",
+      link: "/sobre-nos",
     },
     {
       title: "F.A.Q.",

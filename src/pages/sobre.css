@@ -1,0 +1,108 @@
+/* Container principal */
+.sobre-container {
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Animação dos blocos da timeline */
+  .time-block {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 1s forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Delays escalonados para simular a passagem do tempo */
+  .timeline > .time-block:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+  .timeline > .time-block:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+  .timeline > .time-block:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+  .timeline > .time-block:nth-child(4) {
+    animation-delay: 0.8s;
+  }
+  
+  /* Keyframes para a animação fadeInUp */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Efeito hover para os cards */
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%);
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  /* Estilos consolidados para os ícones */
+  .icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  .icon-size {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Efeito de zoom sutil nas imagens */
+  .aspect-video img {
+    transition: transform 0.3s ease-in-out;
+  }
+  .aspect-video img:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Toque nostálgico nos títulos */
+  .title,
+  .formation-title,
+  .portaria-title,
+  .primeira-versao-title,
+  .portal2-title {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  /* Limite máximo e espaçamento dos cards */
+  .formation-card,
+  .portaria-card,
+  .primeira-versao-card,
+  .portal2-card {
+    max-width: 900px;
+    margin-top: 2rem;
+    border-radius: 8px;
+  }
+  
+  /* Espaçamento e posicionamento dos blocos */
+  .formation-block,
+  .portaria-block,
+  .primeira-versao-block,
+  .portal2-block {
+    margin-bottom: 4rem;
+    position: relative;
+  }
+  
+  /* Ajustes responsivos */
+  @media (max-width: 768px) {
+    .formation-card,
+    .portaria-card,
+    .primeira-versao-card,
+    .portal2-card {
+      margin-top: 1rem;
+    }
+  }
+  

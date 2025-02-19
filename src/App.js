@@ -9,6 +9,7 @@ import GestaoUsuarios from "./pages/gestaoUsuarios";
 import Protocolos from "./pages/protocolos";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+import SobrePortal from "./pages/sobre";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,14 @@ const App = () => (
           element={
             <ProtectedRoute>
               <Protocolos />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sobre-nos"
+          element={
+            <ProtectedRoute>
+              <SobrePortal />
             </ProtectedRoute>
           }
         />
