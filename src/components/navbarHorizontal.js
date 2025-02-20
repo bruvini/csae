@@ -26,7 +26,7 @@ const NavbarHorizontal = ({ user }) => {
           <Link to="/feridas">Feridas</Link>
         </li>
         <li>
-          <Link to="/protocolos-de-enfermagem">Protocolos de Enfermagem</Link>
+          <Link to="/protocolos">Protocolos de Enfermagem</Link>
         </li>
         <li>
           <Link to="/noticias">Notícias</Link>
@@ -35,7 +35,7 @@ const NavbarHorizontal = ({ user }) => {
           <Link to="/sugestoes">Sugestões</Link>
         </li>
         <li>
-          <Link to="/sobre-csae">Sobre a CSAE</Link>
+          <Link to="/sobre-nos">Sobre a CSAE</Link>
         </li>
         <li>
           <Link to="/faq">F.A.Q.</Link>
