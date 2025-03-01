@@ -269,6 +269,11 @@ const Cadastro = () => {
         dataCadastro: new Date(),
       };
 
+      // Se o usuário for Residente de Enfermagem, inclui a data de início da residência
+      if (formacao === "Residente de Enfermagem") {
+        usuarioData.dataInicioResidencia = dataInicioResidencia;
+      }
+
       // Se o usuário atua na SMS de Florianópolis, adiciona lotação e matrícula;
       // caso contrário, mantém os dados de cidadeTrabalho, localTrabalho e cargo.
       if (atuaSMS === "Sim") {
