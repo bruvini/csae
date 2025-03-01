@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoCSAE from "../img/logo_csae.png";
 import "./login.css";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import {
   collection,
   query,
@@ -31,10 +35,8 @@ function Login() {
     setIsLoading(true);
     const auth = getAuth();
     try {
-      // Tenta autenticar com Firebase Auth
       await signInWithEmailAndPassword(auth, email, senha);
       
-      // Após a autenticação, busque os detalhes do usuário na coleção "dbUsuarios"
       const q = query(collection(db, "dbUsuarios"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
@@ -47,14 +49,22 @@ function Login() {
         userData = { id: docSnap.id, ...docSnap.data() };
       });
       
-      // Certifica que o usuário possui o campo "nome"
       if (!userData.nome) {
         toast.error("Dados do usuário incompletos. Contate o administrador.");
         setIsLoading(false);
         return;
       }
-
-      // Verifique o statusAcesso do usuário
+      
+      // VERIFICAÇÃO: Se usuário é residente e já está revogado, atualiza status para "Revogado - Termino de Residência"
+      if (userData.formacao === "Residente de Enfermagem" && userData.statusAcesso === "Revogado") {
+        const userDocRef = doc(db, "dbUsuarios", userData.id);
+        await updateDoc(userDocRef, { statusAcesso: "Revogado - Termino de Residência" });
+        toast.error("Acesso para residentes de enfermagem é revogado após o término da residência. Nossa equipe avaliará a liberação do seu acesso.");
+        setIsLoading(false);
+        return;
+      }
+      
+      // Verifica status de acesso geral
       if (userData.statusAcesso === "Recusado" || userData.statusAcesso === "Revogado") {
         toast.error("Problema no acesso. Entre em contato com: gerenf.sms.pmf@gmail.com");
         setIsLoading(false);
@@ -65,13 +75,27 @@ function Login() {
         setIsLoading(false);
         return;
       }
+      
+      // Para status "Liberado": Verificar e atualizar último login
       if (userData.statusAcesso === "Liberado") {
-        // Incrementa o campo "numeroAcessos" no Firestore (cria ou incrementa)
         const userDocRef = doc(db, "dbUsuarios", userData.id);
+        if (userData.ultimoLogin) {
+          const lastLogin = userData.ultimoLogin.toDate
+            ? userData.ultimoLogin.toDate()
+            : new Date(userData.ultimoLogin);
+          const sixMonthsAgo = new Date();
+          sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+          if (lastLogin < sixMonthsAgo) {
+            await updateDoc(userDocRef, { statusAcesso: "Revogado - Falta de Uso" });
+            toast.error("Por segurança e treinamento contínuo, seu acesso foi revogado por falta de uso. Nossa equipe avaliará a liberação.");
+            setIsLoading(false);
+            return;
+          }
+        }
+        await updateDoc(userDocRef, { ultimoLogin: new Date() });
         await updateDoc(userDocRef, {
           numeroAcessos: increment(1),
         });
-        // Armazena os dados do usuário no localStorage para uso no Header e demais páginas
         localStorage.setItem("user", JSON.stringify(userData));
         toast.success(`Bem-vindo(a), ${userData.nome}`);
         setIsLoading(false);
@@ -82,7 +106,7 @@ function Login() {
       toast.error("Erro ao autenticar. Verifique suas credenciais.");
       setIsLoading(false);
     }
-  };
+  };  
 
   // Função para redefinir a senha usando um URL de ação personalizado
   const handlePasswordReset = async () => {
@@ -93,7 +117,7 @@ function Login() {
     const auth = getAuth();
     const actionCodeSettings = {
       // URL personalizada para a página de gerenciamento de conta (altere para seu domínio)
-      url: "https://csaefloripa.firebaseapp.com", 
+      url: "https://csaefloripa.firebaseapp.com",
       handleCodeInApp: true,
     };
     try {
@@ -152,7 +176,11 @@ function Login() {
                 {isLoading ? "Acessando..." : "Acessar"}
               </button>
               <div className="mt-3 text-center">
-                <a href="#" className="link-green me-3" onClick={handlePasswordReset}>
+                <a
+                  href="#"
+                  className="link-green me-3"
+                  onClick={handlePasswordReset}
+                >
                   Esqueci a Senha
                 </a>
                 <a
@@ -181,9 +209,9 @@ function Login() {
               Uma nova era para a enfermagem em Florianópolis
             </h1>
             <p className="mb-4 subtitulo">
-              Ouvimos você! Nosso portal foi completamente reformulado para atender
-              melhor às suas necessidades. Uma plataforma mais intuitiva, moderna e
-              eficiente para apoiar seu trabalho diário.
+              Ouvimos você! Nosso portal foi completamente reformulado para
+              atender melhor às suas necessidades. Uma plataforma mais
+              intuitiva, moderna e eficiente para apoiar seu trabalho diário.
             </p>
             <ul className="list-unstyled">
               <li className="mb-2">
@@ -212,7 +240,8 @@ function Login() {
           rel="noreferrer"
           className="link-green"
         >
-          Comissão Permanente de Sistematização da Assistência de Enfermagem (CSAE)
+          Comissão Permanente de Sistematização da Assistência de Enfermagem
+          (CSAE)
         </a>
         . Siga-nos no Instagram:{" "}
         <a
