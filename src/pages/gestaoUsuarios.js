@@ -46,11 +46,28 @@ const GestaoUsuarios = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [accessType, setAccessType] = useState("Comum");
 
+  const parseUltimoLogin = (loginValue) => {
+    // Se for um objeto Timestamp do Firestore, use toDate()
+    if (loginValue && loginValue.toDate) {
+      return loginValue.toDate();
+    } else if (typeof loginValue === "string") {
+      // Limpa a string removendo " de " e " às "
+      const cleaned = loginValue.replace(/ de /g, " ").replace(/ às /g, " ");
+      const parsed = new Date(cleaned);
+      return parsed;
+    }
+    return loginValue;
+  };  
+
   // Função para buscar usuários pendentes (statusAcesso === "Aguardando")
   const fetchPendingUsers = async () => {
     const q = query(
       collection(db, "dbUsuarios"),
-      where("statusAcesso", "==", "Aguardando")
+      where("statusAcesso", "in", [
+        "Aguardando",
+        "Revogado - Falta de Uso",
+        "Revogado - Termino de Residência"
+      ])
     );
     const querySnapshot = await getDocs(q);
     let users = [];
@@ -58,7 +75,7 @@ const GestaoUsuarios = () => {
       users.push({ id: docSnap.id, ...docSnap.data() });
     });
     return users;
-  };
+  };  
 
   // Função para buscar usuários com acesso (statusAcesso === "Liberado")
   const fetchActiveUsers = async () => {
@@ -561,7 +578,17 @@ const GestaoUsuarios = () => {
                   key={user.id}
                   className="d-flex justify-content-between align-items-center p-2 mb-2 bg-light rounded"
                 >
-                  <span className="fw-medium">{user.nome}</span>
+                  <div>
+                    <span className="fw-medium">{user.nome}</span>
+                    {(user.statusAcesso === "Revogado - Falta de Uso" ||
+                      user.statusAcesso === "Revogado - Termino de Residência") && (
+                      <div className="text-danger small">
+                        {user.statusAcesso === "Revogado - Falta de Uso"
+                          ? "Sem acesso: há mais de 6 meses sem uso da plataforma"
+                          : "Sem acesso: residência concluída"}
+                      </div>
+                    )}
+                  </div>
                   <button
                     className="btn btn-outline-success btn-sm"
                     onClick={() => handleViewDetails(user.id)}
@@ -570,7 +597,7 @@ const GestaoUsuarios = () => {
                     Ver mais informações
                   </button>
                 </div>
-              ))
+              ))              
             ) : (
               <p className="text-muted">Nenhum usuário aguardando liberação.</p>
             )}
@@ -600,18 +627,23 @@ const GestaoUsuarios = () => {
                         ? user.numeroAcessos
                         : "nunca acessou"}
                       {user.ultimoLogin && (
-                        <>
-                          {" "}
-                          • Último login:{" "}
-                          {new Date(user.ultimoLogin).toLocaleString("pt-BR", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </>
-                      )}
+  <>
+    {" "}
+    • Último login:{" "}
+    {(() => {
+      const ultimoLoginDate = parseUltimoLogin(user.ultimoLogin);
+      return ultimoLoginDate instanceof Date && !isNaN(ultimoLoginDate.getTime())
+        ? ultimoLoginDate.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : user.ultimoLogin;
+    })()}
+  </>
+)}
                     </div>
                   </div>
                   <div>
