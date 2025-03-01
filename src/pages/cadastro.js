@@ -12,7 +12,6 @@ import { jsPDF } from "jspdf";
 
 const Cadastro = () => {
   const navigate = useNavigate();
-
   const [showModal, setShowModal] = useState(false);
 
   // Informações Pessoais
@@ -30,8 +29,10 @@ const Cadastro = () => {
   const [formacao, setFormacao] = useState("");
   const [registroCOREN, setRegistroCOREN] = useState("");
   const [registroCORENUF, setRegistroCORENUF] = useState("");
+  const [dataInicioResidencia, setDataInicioResidencia] = useState("");
   const [atuaSMS, setAtuaSMS] = useState("");
-  const [distrito, setDistrito] = useState("");
+  const [lotacao, setLotacao] = useState("");
+  const [matricula, setMatricula] = useState("");
   const [cidadeTrabalho, setCidadeTrabalho] = useState("");
   const [localTrabalho, setLocalTrabalho] = useState("");
   const [cargo, setCargo] = useState("");
@@ -40,8 +41,130 @@ const Cadastro = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
+  const isFormValid =
+    nome &&
+    rg &&
+    cpf &&
+    rua &&
+    numero &&
+    bairro &&
+    cidade &&
+    uf &&
+    cep &&
+    email &&
+    senha &&
+    formacao &&
+    (formacao === "Estagiário de Enfermagem"
+      ? true
+      : registroCOREN &&
+        registroCORENUF &&
+        (formacao === "Residente de Enfermagem"
+          ? dataInicioResidencia
+          : true)) &&
+    (atuaSMS === "Sim"
+      ? lotacao && matricula
+      : atuaSMS === "Não"
+      ? cidadeTrabalho && localTrabalho && cargo
+      : false);
+
+  // Lista de lotações
+  const lotacoes = [
+    "Abraão",
+    "Agronômica",
+    "Alto Ribeirão",
+    "Armação",
+    "Balneário",
+    "Barra da Lagoa",
+    "Cachoeira do Bom Jesus",
+    "Caieira da Barra do Sul",
+    "Campeche",
+    "Canasvieiras",
+    "Canto da Lagoa",
+    "Capivari",
+    "CAPS - Pontal do Coral",
+    "CAPSAD - Continente",
+    "CAPSAD - Ilha",
+    "CAPSI - Infantil",
+    "Capoeiras",
+    "Carianos",
+    "Centro",
+    "Coloninha",
+    "Coqueiros",
+    "Córrego Grande",
+    "Costa da Lagoa",
+    "Costeira do Pirajubaé",
+    "Estreito",
+    "Fazenda do Rio Tavares",
+    "Ingleses",
+    "Itacorubi",
+    "Jardim Atlântico",
+    "João Paulo",
+    "Jurerê",
+    "Lagoa da Conceição",
+    "Monte Cristo",
+    "Monte Serrat",
+    "Morro das Pedras",
+    "Novo Continente",
+    "Pantanal",
+    "Pântano do Sul",
+    "Policlínica Centro",
+    "Policlínica Continente",
+    "Policlínica Norte",
+    "Policlínica Sul",
+    "Ponta das Canas",
+    "Prainha",
+    "Ratones",
+    "Ribeirão da Ilha",
+    "Rio Tavares",
+    "Rio Vermelho",
+    "Saco dos Limões",
+    "Saco Grande",
+    "Santinho",
+    "Santo Antônio de Lisboa",
+    "Sapé",
+    "Tapera",
+    "Trindade",
+    "Upa Continente",
+    "Upa Norte",
+    "Upa Sul",
+    "Vargem Grande",
+    "Vargem Pequena",
+    "Vila Aparecida",
+  ];
+
+  const ufs = [
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO",
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     // Validação dos campos obrigatórios
     if (
       !nome ||
@@ -124,8 +247,8 @@ const Cadastro = () => {
       );
       const uid = userCredential.user.uid;
 
-      // Salvar os dados do usuário no Firestore (incluindo se o termo foi aceito)
-      await addDoc(collection(db, "dbUsuarios"), {
+      // Monta o objeto de dados com as informações comuns
+      const usuarioData = {
         uid,
         nome,
         rg,
@@ -140,16 +263,24 @@ const Cadastro = () => {
         registroCOREN,
         registroCORENUF,
         atuaSMS,
-        distrito,
-        cidadeTrabalho,
-        localTrabalho,
-        cargo,
         email,
-        // Atenção: Não armazene senhas em texto plano em produção.
-        termoAceito: true, // indica que o usuário aceitou o termo
+        termoAceito: true,
         statusAcesso: "Aguardando",
-        createdAt: new Date(),
-      });
+        dataCadastro: new Date(),
+      };
+
+      // Se o usuário atua na SMS de Florianópolis, adiciona lotação e matrícula;
+      // caso contrário, mantém os dados de cidadeTrabalho, localTrabalho e cargo.
+      if (atuaSMS === "Sim") {
+        usuarioData.lotacao = lotacao;
+        usuarioData.matricula = matricula;
+      } else {
+        usuarioData.cidadeTrabalho = cidadeTrabalho;
+        usuarioData.localTrabalho = localTrabalho;
+        usuarioData.cargo = cargo;
+      }
+
+      await addDoc(collection(db, "dbUsuarios"), usuarioData);
 
       toast.success(
         `Cadastro realizado com sucesso! ${nome}, você será direcionado(a) para a página de login.`
@@ -235,18 +366,17 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
               <img src={logoCSAE} alt="Logo CSAE" className="logo-csae" />
             </div>
             <h2 className="mb-2 titulo text-center">
-              Venha fazer parte da nova era da enfermagem com o Portal CSAE
-              Floripa
+              Faça parte da nova era da enfermagem com o Portal CSAE Floripa
             </h2>
             <p className="subtitulo text-center mb-4">
-              Os dados abaixo são importantes para realizar o cadastro e para
-              gerar o termo de responsabilidade de uso da plataforma, visto que
-              é um projeto piloto e inovador.
+              Os dados abaixo serão utilizados para garantir segurança aos seus
+              dados e dos pacientes sobre seus cuidados, assim como para gerar o
+              termo de responsabilidade sobre o uso da plataforma.
             </p>
             <form onSubmit={handleSubmit}>
               {/* Informações Pessoais */}
               <div className="cadastro-section">
-                <h4 className="mb-3">Informações Pessoais</h4>
+                <h4 className="mb-3 title-sections">Informações Pessoais</h4>
                 <div className="mb-3">
                   <label htmlFor="nome" className="form-label">
                     Nome completo
@@ -341,33 +471,11 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
                         required
                       >
                         <option value="">Selecione</option>
-                        <option value="AC">AC</option>
-                        <option value="AL">AL</option>
-                        <option value="AP">AP</option>
-                        <option value="AM">AM</option>
-                        <option value="BA">BA</option>
-                        <option value="CE">CE</option>
-                        <option value="DF">DF</option>
-                        <option value="ES">ES</option>
-                        <option value="GO">GO</option>
-                        <option value="MA">MA</option>
-                        <option value="MT">MT</option>
-                        <option value="MS">MS</option>
-                        <option value="MG">MG</option>
-                        <option value="PA">PA</option>
-                        <option value="PB">PB</option>
-                        <option value="PR">PR</option>
-                        <option value="PE">PE</option>
-                        <option value="PI">PI</option>
-                        <option value="RJ">RJ</option>
-                        <option value="RN">RN</option>
-                        <option value="RS">RS</option>
-                        <option value="RO">RO</option>
-                        <option value="RR">RR</option>
-                        <option value="SC">SC</option>
-                        <option value="SP">SP</option>
-                        <option value="SE">SE</option>
-                        <option value="TO">TO</option>
+                        {ufs.map((ufItem) => (
+                          <option key={ufItem} value={ufItem}>
+                            {ufItem}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="col-md-4 mb-3">
@@ -387,6 +495,8 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
               {/* Informações Profissionais */}
               <div className="cadastro-section">
                 <h4 className="mb-3">Informações Profissionais</h4>
+
+                {/* 1) Formação */}
                 <div className="mb-3">
                   <label htmlFor="formacao" className="form-label">
                     Formação
@@ -411,118 +521,211 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
                     </option>
                   </select>
                 </div>
+
+                {/* 2) Se não for Estagiário, mostra o bloco de COREN */}
                 {formacao && formacao !== "Estagiário de Enfermagem" && (
                   <div className="mb-3">
-                    <label className="form-label">Registro COREN</label>
-                    <div className="row">
-                      <div className="col-md-6 mb-3">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Número"
-                          value={registroCOREN}
-                          onChange={(e) => setRegistroCOREN(e.target.value)}
-                          required
-                        />
+                    {formacao === "Residente de Enfermagem" ? (
+                      <div className="row">
+                        <div className="col-md-4 mb-3">
+                          <label className="form-label" htmlFor="registroCOREN">
+                            Número do COREN
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            id="registroCOREN"
+                            placeholder="Número"
+                            value={registroCOREN}
+                            onChange={(e) => setRegistroCOREN(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <div className="col-md-4 mb-3">
+                          <label
+                            className="form-label"
+                            htmlFor="registroCORENUF"
+                          >
+                            UF do COREN (Estado do registro)
+                          </label>
+                          <select
+                            className="form-select"
+                            id="registroCORENUF"
+                            value={registroCORENUF}
+                            onChange={(e) => setRegistroCORENUF(e.target.value)}
+                            required
+                          >
+                            <option value="">Selecione</option>
+                            {ufs.map((ufItem) => (
+                              <option key={ufItem} value={ufItem}>
+                                {ufItem}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-4 mb-3">
+                          <label
+                            className="form-label"
+                            htmlFor="dataInicioResidencia"
+                          >
+                            Data de Início da Residência
+                          </label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            id="dataInicioResidencia"
+                            value={dataInicioResidencia}
+                            onChange={(e) =>
+                              setDataInicioResidencia(e.target.value)
+                            }
+                            required
+                          />
+                        </div>
                       </div>
-                      <div className="col-md-6 mb-3">
-                        <select
-                          className="form-select"
-                          value={registroCORENUF}
-                          onChange={(e) => setRegistroCORENUF(e.target.value)}
-                          required
-                        >
-                          <option value="">Selecione</option>
-                          <option value="AC">AC</option>
-                          <option value="AL">AL</option>
-                          <option value="AP">AP</option>
-                          <option value="AM">AM</option>
-                          <option value="BA">BA</option>
-                          <option value="CE">CE</option>
-                          <option value="DF">DF</option>
-                          <option value="ES">ES</option>
-                          <option value="GO">GO</option>
-                          <option value="MA">MA</option>
-                          <option value="MT">MT</option>
-                          <option value="MS">MS</option>
-                          <option value="MG">MG</option>
-                          <option value="PA">PA</option>
-                          <option value="PB">PB</option>
-                          <option value="PR">PR</option>
-                          <option value="PE">PE</option>
-                          <option value="PI">PI</option>
-                          <option value="RJ">RJ</option>
-                          <option value="RN">RN</option>
-                          <option value="RS">RS</option>
-                          <option value="RO">RO</option>
-                          <option value="RR">RR</option>
-                          <option value="SC">SC</option>
-                          <option value="SP">SP</option>
-                          <option value="SE">SE</option>
-                          <option value="TO">TO</option>
-                        </select>
+                    ) : (
+                      <div className="row">
+                        {/* 1ª coluna: Número do COREN */}
+                        <div className="col-md-4 mb-3">
+                          <label className="form-label" htmlFor="registroCOREN">
+                            Número do COREN
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            id="registroCOREN"
+                            placeholder="Número"
+                            value={registroCOREN}
+                            onChange={(e) => setRegistroCOREN(e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        {/* 2ª coluna: UF do COREN */}
+                        <div className="col-md-4 mb-3">
+                          <label
+                            className="form-label"
+                            htmlFor="registroCORENUF"
+                            style={{ fontSize: "0.8rem" }}
+                          >
+                            UF do COREN (Estado do registro)
+                          </label>
+                          <select
+                            className="form-select"
+                            id="registroCORENUF"
+                            value={registroCORENUF}
+                            onChange={(e) => setRegistroCORENUF(e.target.value)}
+                            required
+                          >
+                            <option value="">Selecione</option>
+                            {ufs.map((ufItem) => (
+                              <option key={ufItem} value={ufItem}>
+                                {ufItem}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* 3ª coluna vazia, para manter alinhamento com "Residente" */}
+                        <div className="col-md-4 mb-3" />
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
+
+                {/* 3) Pergunta: Atua na SMS? */}
                 <div className="mb-3">
                   <label className="form-label">
                     Atua na SMS de Florianópolis?
                   </label>
-                  <div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="sms"
-                        id="smsSim"
-                        value="Sim"
-                        checked={atuaSMS === "Sim"}
-                        onChange={(e) => setAtuaSMS(e.target.value)}
-                        required
-                      />
-                      <label className="form-check-label" htmlFor="smsSim">
-                        Sim
-                      </label>
+                  <div className="row align-items-center">
+                    <div className="col-md-6 d-flex align-items-center">
+                      {/* Radios (Sim/Não) */}
+                      <div className="form-check form-check-inline me-3">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="sms"
+                          id="smsSim"
+                          value="Sim"
+                          checked={atuaSMS === "Sim"}
+                          onChange={(e) => setAtuaSMS(e.target.value)}
+                          required
+                        />
+                        <label className="form-check-label" htmlFor="smsSim">
+                          Sim
+                        </label>
+                      </div>
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="sms"
+                          id="smsNao"
+                          value="Não"
+                          checked={atuaSMS === "Não"}
+                          onChange={(e) => setAtuaSMS(e.target.value)}
+                          required
+                        />
+                        <label className="form-check-label" htmlFor="smsNao">
+                          Não
+                        </label>
+                      </div>
                     </div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="sms"
-                        id="smsNao"
-                        value="Não"
-                        checked={atuaSMS === "Não"}
-                        onChange={(e) => setAtuaSMS(e.target.value)}
-                        required
-                      />
-                      <label className="form-check-label" htmlFor="smsNao">
-                        Não
-                      </label>
-                    </div>
+                    {atuaSMS === "Não" && (
+                      <div className="col-md-6 d-flex align-items-center">
+                        <div
+                          className="alert-green p-2"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          Atenção: este projeto está em fase de desenvolvimento
+                          e patenteamento. No momento, o acesso para usuários
+                          externos está restrito, mas você pode continuar seu
+                          cadastro e aguardar a liberação.
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* 4) Se “Sim”, mostra lotação e matrícula */}
                 {atuaSMS === "Sim" && (
-                  <div className="mb-3">
-                    <label htmlFor="distrito" className="form-label">
-                      Distrito
-                    </label>
-                    <select
-                      className="form-select"
-                      id="distrito"
-                      value={distrito}
-                      onChange={(e) => setDistrito(e.target.value)}
-                      required
-                    >
-                      <option value="">Selecione</option>
-                      <option value="Norte">Norte</option>
-                      <option value="Sul">Sul</option>
-                      <option value="Centro">Centro</option>
-                      <option value="Continente">Continente</option>
-                      <option value="Gestão">Gestão</option>
-                    </select>
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <label htmlFor="lotacao" className="form-label">
+                        Lotação
+                      </label>
+                      <select
+                        className="form-select"
+                        id="lotacao"
+                        value={lotacao}
+                        onChange={(e) => setLotacao(e.target.value)}
+                        required
+                      >
+                        <option value="">Selecione</option>
+                        {lotacoes.map((l) => (
+                          <option key={l} value={l}>
+                            {l}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-md-6">
+                      <label htmlFor="matricula" className="form-label">
+                        Número da Matrícula
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="matricula"
+                        value={matricula}
+                        onChange={(e) => setMatricula(e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
                 )}
+
+                {/* 5) Se “Não”, mostra cidade, local e cargo */}
                 {atuaSMS === "Não" && (
                   <>
                     <div className="mb-3">
@@ -598,9 +801,17 @@ Florianópolis, ${new Date().getDate()} de ${new Date().toLocaleString(
                   />
                 </div>
               </div>
+
+              {/* Botões */}
               <div className="d-flex justify-content-between">
-                {/* Custom green button */}
-                <button type="submit" className="btn btn-custom">
+                <button
+                  type="submit"
+                  className={`btn btn-custom ${
+                    !isFormValid ? "disabled-tooltip" : ""
+                  }`}
+                  disabled={!isFormValid}
+                  data-tooltip="Por favor, verifique se todos os campos obrigatórios foram preenchidos"
+                >
                   Fazer Cadastro
                 </button>
                 <button

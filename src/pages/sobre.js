@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Calendar, FileText } from "lucide-react";
 import Header from "../components/header";
 import NavbarHorizontal from "../components/navbarHorizontal";
-import { Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
 import "./sobre.css";
 
 // Importe as imagens ou use o caminho adequado para elas

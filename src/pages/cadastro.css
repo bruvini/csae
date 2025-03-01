@@ -1,69 +1,134 @@
-/* Remove the background color on the container to avoid the gray band */
-.cadastro-container {
-    min-height: 100vh;
-    background-color: #ffffff; /* White background */
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+/* ===============================
+   Container Geral da Página de Cadastro
+   =============================== */
+   .cadastro-container {
+    min-height: 100vh;             /* Define altura mínima para ocupar a tela inteira */
+    background-color: #ffffff;     /* Fundo branco */
+    padding-top: 2rem;             /* Espaçamento interno superior */
+    padding-bottom: 2rem;          /* Espaçamento interno inferior */
   }
   
+  /* ===============================
+     Card de Cadastro
+     =============================== */
   .cadastro-card {
-    background-color: #ffffff;
-    border: 1px solid #4A6741; /* Green border */
-    border-radius: 0.5rem;
-    padding: 2rem;
-    box-shadow: 0 4px 8px rgba(74, 103, 65, 0.1);
-    /* Only the form block with shadow, no gray band behind */
+    background-color: #ffffff;     /* Fundo branco */
+    border: 1px solid #4A6741;      /* Borda verde */
+    border-radius: 0.5rem;          /* Bordas arredondadas */
+    padding: 2rem;                 /* Espaçamento interno */
+    box-shadow: 0 4px 8px rgba(74, 103, 65, 0.1); /* Sombra suave */
   }
   
+  /* ===============================
+     Seções do Formulário
+     =============================== */
   .cadastro-section {
-    margin-bottom: 2rem;
+    margin-bottom: 2rem;           /* Espaço entre as seções */
   }
   
-  /* Title and subtitle styles */
+  /* ===============================
+     Títulos e Subtítulos
+     =============================== */
   .titulo {
-    color: #4A6741; /* Primary green tone */
-    font-weight: bold;
+    color: #4A6741;                /* Cor verde primária */
+    font-weight: bold;             /* Texto em negrito */
   }
   
   .subtitulo {
-    color: #2D3F28; /* Darker green tone */
-    font-size: 1rem;
+    color: #2D3F28;                /* Verde mais escuro para subtítulos */
+    font-size: 1rem;               /* Tamanho da fonte */
   }
   
-  /* Form label styling */
+  .title-sections {
+    color: #2D3F28;                /* Títulos de seções com verde escuro */
+  }
+  
+  /* ===============================
+     Estilização dos Rótulos dos Campos (Labels)
+     =============================== */
   .form-label {
-    color: #4A6741;
+    color: #4A6741;                /* Cor dos labels em verde primário */
   }
   
-  /* Fade-in animation */
+  /* ===============================
+     Animação de Fade-in
+     =============================== */
   .fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.5s ease-out;  /* Animação de aparecimento */
   }
   
   @keyframes fadeIn {
     from {
-      opacity: 0;
-      transform: translateY(10px);
+      opacity: 0;                 /* Começa invisível */
+      transform: translateY(10px);/* Deslocado para baixo */
     }
     to {
-      opacity: 1;
-      transform: translateY(0);
+      opacity: 1;                 /* Fica visível */
+      transform: translateY(0);   /* Posição original */
     }
   }
   
-  /* Logo styling if needed */
+  /* ===============================
+     Estilização do Logo
+     =============================== */
   .logo-csae {
-    max-width: 120px;
-    height: auto;
+    max-width: 120px;             /* Largura máxima do logo */
+    height: auto;                 /* Altura automática para manter proporção */
   }
   
-  /* Custom green button styling */
+  /* ===============================
+     Botões Personalizados
+     =============================== */
   .btn-custom {
-    background-color: #4A6741; /* Primary green */
-    color: #ffffff;
-    border: none;
+    background-color: #4A6741;     /* Fundo verde primário */
+    color: #ffffff;               /* Texto branco */
+    border: none;                 /* Sem borda */
   }
+  
   .btn-custom:hover {
-    background-color: #2D3F28; /* Darker green on hover */
+    background-color: #2D3F28;     /* Fundo verde mais escuro no hover */
+  }
+  
+  /* ===============================
+     Estilização de Botões Desabilitados e Tooltip
+     =============================== */
+  /* Permite que o hover funcione mesmo com botão desabilitado */
+  .btn[disabled],
+  .btn:disabled {
+    cursor: not-allowed !important; /* Exibe cursor de "não permitido" */
+    pointer-events: auto !important; /* Permite o hover para mostrar o tooltip */
+    opacity: 0.7;                    /* Menor opacidade para indicar desabilitado */
+  }
+  
+  /* Classe para exibir tooltip customizado ao passar o mouse */
+  .disabled-tooltip {
+    position: relative;           /* Define contexto para posicionamento absoluto do tooltip */
+  }
+  
+  .disabled-tooltip:hover::after {
+    content: attr(data-tooltip);  /* Exibe o conteúdo do atributo data-tooltip */
+    position: absolute;
+    top: -40px;                   /* Posição vertical do tooltip (ajuste se necessário) */
+    left: 0;                      /* Alinhado à esquerda */
+    width: 220px;                 /* Largura do tooltip */
+    padding: 0.5rem;              /* Espaçamento interno */
+    background-color: #4A6741;     /* Fundo verde (mesmo tom do layout) */
+    color: #fff;                  /* Texto branco */
+    font-size: 0.85rem;           /* Tamanho da fonte */
+    border-radius: 0.25rem;       /* Bordas arredondadas */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Sombra leve */
+    pointer-events: none;         /* Impede interação com o tooltip */
+    opacity: 0.9;                 /* Opacidade do tooltip */
+    z-index: 9999;                /* Garante que o tooltip fique sobre os demais elementos */
+  }
+  
+  /* ===============================
+     Estilização do Disclaimer (Alert) para SMS
+     =============================== */
+  .alert-green {
+    background-color: #eaf5ea;     /* Fundo verde claro */
+    border: 1px solid #4A6741;      /* Borda verde */
+    color: #4A6741;               /* Texto verde */
+    border-radius: 0.25rem;         /* Bordas arredondadas */
   }
   
