@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "csaefloripa",
     "public": "./build",
     "ignore": [
       "firebase.json",
